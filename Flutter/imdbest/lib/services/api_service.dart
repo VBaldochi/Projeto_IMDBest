@@ -160,4 +160,37 @@ class ApiService {
       return true; // fallback: permite
     }
   }
+
+  // Buscar anos disponíveis de premiações
+  Future<Map<String, List<dynamic>>> buscarAnosPremiacoes() async {
+    final url = Uri.parse('$baseUrl/premiacoes/anos');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return Map<String, List<dynamic>>.from(json.decode(response.body));
+    } else {
+      throw Exception('Erro ao buscar anos de premiações');
+    }
+  }
+
+  // Buscar dados do Oscar por ano
+  Future<List<dynamic>> buscarOscarPorAno(int ano) async {
+    final url = Uri.parse('$baseUrl/premiacoes/oscar/$ano');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Erro ao buscar dados do Oscar');
+    }
+  }
+
+  // Buscar dados do Globo de Ouro por ano
+  Future<List<dynamic>> buscarGloboPorAno(int ano) async {
+    final url = Uri.parse('$baseUrl/premiacoes/globo/$ano');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Erro ao buscar dados do Globo de Ouro');
+    }
+  }
 }

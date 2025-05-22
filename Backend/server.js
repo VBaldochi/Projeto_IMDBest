@@ -25,6 +25,7 @@ mongoose
 
 app.use('/filmes', require('./routes/filmes'));
 app.use('/auth', require('./routes/authRoutes'));
+app.use('/premiacoes', require('./routes/premiacoesRoutes'));
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

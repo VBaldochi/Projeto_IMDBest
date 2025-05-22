@@ -8,11 +8,13 @@ class PremiosDetalheScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('$premio $ano')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: const Text('Detalhes da premiação aqui...'),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text('$premio $ano')),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: const Text('Detalhes da premiação aqui...'),
+        ),
       ),
     );
   }

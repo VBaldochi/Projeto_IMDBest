@@ -1,110 +1,87 @@
-## 🎬 API RESTful - Filmes & Premiações + Previsão de Prêmios
+## 🎬 IMDBest - Sistema de Previsão de Premiações de Filmes
 
-Este projeto reúne uma API backend em **Node.js** (Express + MongoDB) e uma API de Machine Learning em **Python** (FastAPI) para previsão de indicações e vitórias no Oscar e Globo de Ouro. O sistema serve dados sobre filmes, usuários, premiações e também permite consultar as chances de um filme ser indicado ou vencer nas principais premiações.
+Este projeto integra um backend Node.js (Express + MongoDB), uma API de Machine Learning em Python (FastAPI) e um aplicativo Flutter para prever indicações e vitórias no Oscar e Globo de Ouro. O sistema permite consultar filmes, ver históricos de premiações e prever chances de premiação para filmes ainda não indicados ou premiados.
 
 ---
 
 ### ✅ Funcionalidades
 
-- Cadastro e login de usuários (com JWT)
-- Listagem de filmes e premiações
-- Envio de novos filmes para análise
-- Previsão de chances de indicação/vitória para Oscar e Globo de Ouro (API Python)
-- API protegida por autenticação
+- Cadastro e login de usuários (JWT)
+- Listagem de filmes e detalhes (dados do TMDB/OMDB)
+- Consulta e visualização de premiações históricas (Oscar e Globo de Ouro)
+- Previsão de chances de indicação/vitória para filmes (ML API Python)
+- Tela de premiações moderna e interativa no app Flutter
+- Backend robusto com endpoints RESTful e autenticação
 
 ---
 
-### 🚀 Instalação das APIs
+### 🚀 Instalação e Execução
 
 #### Backend Node.js
 
 ```bash
-# Clone o repositório
-cd backend
+cd Backend
 npm install
-
-# Crie um arquivo .env com as seguintes variáveis:
+# Configure o .env conforme exemplo abaixo
+npm start
 ```
 
-`.env`
+`.env` exemplo:
 ```
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/filmes-db
 JWT_SECRET=sua-chave-secreta
 ```
 
-```bash
-# Inicie o servidor
-npm start
-```
-
 #### API de Machine Learning (Python)
 
-Pré-requisitos: Python 3.8+ (recomendado), FastAPI, Uvicorn, scikit-learn, xgboost, pandas, joblib
+Pré-requisitos: Python 3.8+, FastAPI, Uvicorn, scikit-learn, xgboost, pandas, joblib
 
 ```bash
-# Instale as dependências
-python -m pip install fastapi uvicorn scikit-learn xgboost pandas joblib
-
-# Rode a API (ajuste o caminho se necessário)
-uvicorn Scripts.api_modelo:app --reload
+cd Python
+pip install -r requirements.txt  # ou instale os pacotes manualmente
+uvicorn api_modelo:app --reload
 ```
 
-Acesse a documentação interativa da API Python em: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+Acesse a documentação da API Python em: http://127.0.0.1:8000/docs
+
+#### App Flutter
+
+```bash
+cd Flutter/imdbest
+flutter pub get
+flutter run
+```
 
 ---
 
-### 📡 Rotas da API Node.js
+### 📡 Principais Endpoints
 
-#### 🔐 Autenticação
+#### Node.js
 
-- `POST /api/auth/registrar` — Cadastro de usuário
-- `POST /api/auth/login` — Login de usuário
+- `POST /api/auth/registrar` — Cadastro
+- `POST /api/auth/login` — Login
+- `GET /api/filmes` — Lista filmes
+- `POST /api/filmes/classificar` — Previsão de premiação (chama FastAPI)
+- `GET /api/premiacoes/anos` — Anos disponíveis
+- `GET /api/premiacoes/oscar/:ano` — Premiações Oscar por ano
+- `GET /api/premiacoes/globo/:ano` — Premiações Globo de Ouro por ano
 
-#### 🎞️ Filmes
+#### FastAPI (Python)
 
-- `GET /api/filmes` — Lista todos os filmes
-- `POST /api/filmes` — Envia novo filme para análise (JWT obrigatório)
-
-#### 🏆 Premiações
-
-- `GET /api/premiacoes` — Lista todas as premiações cadastradas
-
----
-
-### 🤖 Rotas da API Python (Machine Learning)
-
-- `POST /predict`  
-  Consulta as chances de um filme específico ser indicado ou vencer em uma ou mais categorias.  
-  **Body:**
-  ```json
-  {
-    "title": "Nome do Filme",
-    "year": 2025,
-    "categorias": ["oscar_nominated", "oscar_winner"]
-  }
-  ```
-  **Resposta:**
-  ```json
-  {
-    "oscar_nominated": 0.12,
-    "oscar_winner": 0.01
-  }
-  ```
-
-- `GET /top10?categoria=oscar_nominated`  
-  Retorna os 10 filmes com maior chance naquela categoria.
+- `POST /predict` — Previsão de chances para categorias
+- `GET /top10?categoria=...` — Top 10 maiores chances por categoria
 
 ---
 
-### 📱 App Mobile
+### 📱 App Flutter
 
-O aplicativo mobile será desenvolvido em **Flutter**, com foco em:
-
-- Interface para login e cadastro de usuário
-- Tela de listagem dos filmes e seus dados (IMDB, duração, etc.)
-- Visualização das premiações e últimos vencedores
-- Consulta das chances de indicação/vitória de um filme (botão visível apenas para filmes ainda não premiados)
+- Login/cadastro com JWT
+- Busca de filmes (TMDB/OMDB)
+- Detalhes completos do filme
+- Seleção de categorias e previsão de premiação
+- Tela de premiações: escolha de premiação, ano, categoria, destaque para vencedores
+- Visual moderno, responsivo e seguro (SafeArea em todas as telas)
 
 ---
 
@@ -112,19 +89,20 @@ O aplicativo mobile será desenvolvido em **Flutter**, com foco em:
 
 ```
 raiz-do-projeto/
-├── backend/          # API Node.js (Express + MongoDB)
-├── Scripts/          # Scripts Python (treinamento e API FastAPI)
-├── frontend/         # App .NET MAUI (ou Flutter, se aplicável)
+├── Backend/          # API Node.js (Express + MongoDB)
+├── Python/           # API FastAPI + scripts ML
+├── Flutter/imdbest/  # App Flutter
+├── Data/             # Dados históricos (Oscar, Globo, IMDB)
 ├── README.md         # Este arquivo
 ```
 
 ---
 
-### 📬 Contato
+### ℹ️ Observações
 
-Dúvidas ou sugestões? Entre em contato com a equipe de desenvolvimento.
+- O sistema utiliza dados públicos do IMDB, Oscar e Globo de Ouro.
+- Projeto acadêmico para fins de aprendizado.
+- Para dúvidas, consulte os READMEs de cada subpasta ou entre em contato com a equipe.
 
 ---
-
-> Projeto acadêmico com fins de aprendizado. Utiliza dados públicos do IMDB, Oscar e Globo de Ouro.
 

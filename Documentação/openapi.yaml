@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  title: API RESTful - Filmes & Premiações + Previsão
+  description: >
+    API RESTful desenvolvida em Node.js (Express + MongoDB) para gerenciamento de filmes, usuários e premiações,
+    integrada com uma API em Python (FastAPI) que fornece previsões de indicação ou vitória no Oscar e Globo de Ouro.
+  version: 1.1.0
+
+servers:
+  - url: https://api.imdbest.com/api
+    description: Servidor de produção (exemplo)
+  - url: http://localhost:5000/api
+    description: Servidor local para testes
+
+paths:
+  /auth/registrar:
+    post:
+      tags:
+        - Autenticação
+      summary: Cadastro de novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroPadrao'
+
+  /auth/login:
+    post:
+      tags:
+        - Autenticação
+      summary: Login de usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '200':
+          description: Login bem-sucedido (retorna token JWT)
+        '401':
+          description: Credenciais inválidas
+
+  /filmes:
+    get:
+      tags:
+        - Filmes
+      summary: Listar todos os filmes
+      responses:
+        '200':
+          description: Lista de filmes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Filme'
+
+    post:
+      tags:
+        - Filmes
+      summary: Enviar novo filme para análise
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilmeInput'
+      responses:
+        '201':
+          description: Filme cadastrado com sucesso
+        '400':
+          description: Erro de validação
+        '401':
+          description: Token inválido ou ausente
+
+  /premiacoes:
+    get:
+      tags:
+        - Premiações
+      summary: Listar todas as premiações
+      responses:
+        '200':
+          description: Lista de premiações
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Premiacao'
+
+  /predict:
+    post:
+      tags:
+        - Machine Learning
+      summary: Prever chances de indicação ou vitória
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                year:
+                  type: integer
+                categorias:
+                  type: array
+                  items:
+                    type: string
+              example:
+                title: "Barbie"
+                year: 2023
+                categorias: ["oscar_nominated", "oscar_winner"]
+      responses:
+        '200':
+          description: Probabilidades de indicação ou vitória
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  oscar_nominated: 0.67
+                  oscar_winner: 0.12
+
+  /top10:
+    get:
+      tags:
+        - Machine Learning
+      summary: Retorna os 10 filmes com maior chance de premiação
+      parameters:
+        - name: categoria
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [oscar_nominated, oscar_winner, golden_nominated, golden_winner]
+      responses:
+        '200':
+          description: Lista com os 10 filmes com maior probabilidade
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    titulo:
+                      type: string
+                    probabilidade:
+                      type: number
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UsuarioInput:
+      type: object
+      required:
+        - nome
+        - email
+        - senha
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+
+    Filme:
+      type: object
+      description: Representa um filme cadastrado
+      properties:
+        _id:
+          type: string
+        titulo:
+          type: string
+        diretor:
+          type: string
+        ano:
+          type: integer
+        genero:
+          type: string
+        imdb:
+          type: number
+
+    FilmeInput:
+      type: object
+      required:
+        - titulo
+        - diretor
+        - ano
+        - genero
+      properties:
+        titulo:
+          type: string
+        diretor:
+          type: string
+        ano:
+          type: integer
+        genero:
+          type: string
+
+    Premiacao:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+        categoria:
+          type: string
+        ano:
+          type: integer
+        vencedor:
+          type: boolean
+
+    ErroPadrao:
+      type: object
+      properties:
+        mensagem:
+          type: string
+        codigo:
+          type: integer
+
+tags:
+  - name: Autenticação
+    description: Cadastro e login de usuários
+  - name: Filmes
+    description: Operações com filmes cadastrados
+  - name: Premiações
+    description: Consulta de premiações registradas
+  - name: Machine Learning
+    description: Previsões de indicação ou vitória em premiações

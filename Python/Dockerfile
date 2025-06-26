@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir \
     numpy \
     pymongo \
     joblib \
-    scikit-learn \
+    scikit-learn==1.6.1 \
     xgboost
 
 # Expor a porta da API

@@ -21,6 +21,19 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text('IMDBest'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () {
+                // Limpa o token se necessário (ex: ApiService().setJwt(null);)
+                Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+              },
+            ),
+          ],
+        ),
         body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,

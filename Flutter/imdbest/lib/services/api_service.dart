@@ -11,7 +11,9 @@ class ApiService {
   final String omdbApiKey = 'f201fb92';
 
   // URL base da sua API Node.js
-  final String baseUrl = 'http://10.0.2.2:5000'; // Corrigido: não inclui /api para rotas de auth
+  final String baseUrl = 'http://172.210.208.100:5000'; // VM pública
+  // URL base da sua API Python (ML)
+  final String pythonApiUrl = 'http://172.210.208.100:8000'; // VM pública
   String? _jwt;
 
   // Salvar token JWT

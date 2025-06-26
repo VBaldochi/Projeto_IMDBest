@@ -3,7 +3,7 @@ const Premiacao = require('../models/Premiacao');
 const axios = require('axios');
 const { validationResult } = require('express-validator');
 
-const FASTAPI_BASE_URL = 'http://localhost:8000';
+const FASTAPI_BASE_URL = 'http://172.210.208.100:8000'; // nome do serviço Docker Compose
 
 exports.listarFilmes = async (req, res) => {
   try {

@@ -13,7 +13,7 @@ services:
   pythonapi:
     build:
       context: ./Python
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     restart: always

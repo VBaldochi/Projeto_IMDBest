@@ -6,7 +6,7 @@ import 'screens/cadastro_screen.dart';
 
 void main() {
   runApp(const IMDBestApp());
-}
+} 
 
 class IMDBestApp extends StatelessWidget {
   const IMDBestApp({super.key});

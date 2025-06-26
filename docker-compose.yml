@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./Backend
+    env_file:
+      - ./Backend/.env
+    ports:
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - pythonapi
+  pythonapi:
+    build:
+      context: ./Python
+      dockerfile: dockerfile
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - MONGO_URI=mongodb+srv://admin:adminpi@pi.r3vqecf.mongodb.net/IMDBest?retryWrites=true&w=majority&appName=PI

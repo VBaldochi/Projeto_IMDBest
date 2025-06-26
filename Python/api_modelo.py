@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from pymongo import MongoClient
 import joblib
+import os
 
 # ==== CONEXÃO COM MONGODB ATLAS ====
 MONGO_URL = "mongodb+srv://admin:adminpi@pi.r3vqecf.mongodb.net/?retryWrites=true&w=majority&appName=PI"
@@ -12,25 +13,27 @@ db = client["IMDBest"]
 colecao_filmes = db["Generos"]
 
 # ==== CARREGAR MODELOS ====
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+JOBLIB_DIR = os.path.join(BASE_DIR, "Joblib")
 MODELOS = {
     "oscar_nominated": (
-        joblib.load("Joblib/best_oscar_nominated_xgboost.joblib"),
-        joblib.load("Joblib/preprocessor_oscar_nominated.joblib"),
+        joblib.load(os.path.join(JOBLIB_DIR, "best_oscar_nominated_xgboost.joblib")),
+        joblib.load(os.path.join(JOBLIB_DIR, "preprocessor_oscar_nominated.joblib")),
         ['Year', 'Duration', 'Rating', 'Votes', 'MPA', 'Languages', 'directors', 'writers', 'stars', 'genre1', 'genre2', 'globe_nominated', 'globe_winner', 'description']
     ),
     "oscar_winner": (
-        joblib.load("Joblib/best_oscar_winner_xgboost.joblib"),
-        joblib.load("Joblib/preprocessor_oscar_winner.joblib"),
+        joblib.load(os.path.join(JOBLIB_DIR, "best_oscar_winner_xgboost.joblib")),
+        joblib.load(os.path.join(JOBLIB_DIR, "preprocessor_oscar_winner.joblib")),
         ['Year', 'Duration', 'Rating', 'Votes', 'MPA', 'Languages', 'directors', 'writers', 'stars', 'genre1', 'genre2', 'oscar_nominated', 'globe_nominated', 'globe_winner', 'description']
     ),
     "globe_nominated": (
-        joblib.load("Joblib/best_globe_nominated_xgboost.joblib"),
-        joblib.load("Joblib/preprocessor_globe_nominated.joblib"),
+        joblib.load(os.path.join(JOBLIB_DIR, "best_globe_nominated_xgboost.joblib")),
+        joblib.load(os.path.join(JOBLIB_DIR, "preprocessor_globe_nominated.joblib")),
         ['Year', 'Duration', 'Rating', 'Votes', 'MPA', 'Languages', 'directors', 'writers', 'stars', 'genre1', 'genre2', 'oscar_nominated', 'globe_winner', 'description']
     ),
     "globe_winner": (
-        joblib.load("Joblib/best_globe_winner_xgboost.joblib"),
-        joblib.load("Joblib/preprocessor_globe_winner.joblib"),
+        joblib.load(os.path.join(JOBLIB_DIR, "best_globe_winner_xgboost.joblib")),
+        joblib.load(os.path.join(JOBLIB_DIR, "preprocessor_globe_winner.joblib")),
         ['Year', 'Duration', 'Rating', 'Votes', 'MPA', 'Languages', 'directors', 'writers', 'stars', 'genre1', 'genre2', 'oscar_nominated', 'globe_nominated', 'description']
     ),
 }
